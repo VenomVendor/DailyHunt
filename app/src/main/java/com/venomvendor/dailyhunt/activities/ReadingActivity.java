@@ -1,6 +1,7 @@
 package com.venomvendor.dailyhunt.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -11,6 +12,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -32,14 +35,18 @@ import vee.android.lib.SimpleSharedPreferences;
 
 public class ReadingActivity extends AppCompatActivity implements View.OnClickListener {
 
+    private final int DELAY_MS = 30000;
     private FloatingActionButton mFav;
     private Article mArticle;
     private SimpleSharedPreferences mPref;
+    private TextView mFlashNews;
     private Handler mHandler = new Handler();
+    private Runnable mRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DHHelper.removeRetry();
         setContentView(R.layout.activity_reading);
         mPref = DHApplication.getSharedPreferences();
 
@@ -73,7 +80,7 @@ public class ReadingActivity extends AppCompatActivity implements View.OnClickLi
 
     private void initContent() {
         TextView contentTitle = (TextView) findViewById(R.id.reading_content_title);
-        TextView mFlashNews = (TextView) findViewById(R.id.flash_news);
+        mFlashNews = (TextView) findViewById(R.id.flash_news);
         mFlashNews.setText(null);
 
         contentTitle.setText(String.format("%s under %s by %s", mArticle.getTitle(),
@@ -155,15 +162,39 @@ public class ReadingActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     @CallSuper
-    @Subscribe
+    @Subscribe(sticky = true)
     public void onEventPosts(GetPosts posts) {
         if (posts.isSuccess()) {
             DHHelper.removeRetry();
+            mFlashNews.setText(posts.getArticles().get(0).getTitle());
+            mFlashNews.requestFocus();
+            int color = mFlashNews.getCurrentTextColor() == Color.WHITE ? Color.YELLOW : Color.WHITE;
+            mFlashNews.setTextColor(color);
+            ScaleAnimation animation = new ScaleAnimation(5.0f, 1.0f, 0.5f, 1.0f,
+                    Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            animation.setDuration(300);
+            animation.setFillAfter(true);
+            mFlashNews.startAnimation(animation);
+
+            repeatTask();
         } else if (DHHelper.hasRetriesLeft()) {
             //RetryHere.
             DHHelper.incrementRetry();
             NetworkHandler.getInstance().getPosts();
         }
+    }
+
+    private void repeatTask() {
+        if (mRunnable == null) {
+            mRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    NetworkHandler.getInstance().getPosts();
+                }
+            };
+        }
+        mHandler.removeCallbacksAndMessages(null);
+        mHandler.postDelayed(mRunnable, DELAY_MS);
     }
 
     @Override
@@ -174,12 +205,14 @@ public class ReadingActivity extends AppCompatActivity implements View.OnClickLi
 
     @Override
     protected void onStop() {
+        mHandler.removeCallbacksAndMessages(null);
         unregisterBus();
         super.onStop();
     }
 
     @Override
     protected void onDestroy() {
+        mHandler.removeCallbacksAndMessages(null);
         unregisterBus();
         super.onDestroy();
     }

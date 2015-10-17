@@ -24,6 +24,7 @@ public class BookMarkActivity extends BaseActivity {
     private SimpleSharedPreferences mPref;
     private List<Article> cacheArticles = new ArrayList<>();
     private List<Article> mBookMarkedArticles = new ArrayList<>();
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,8 +64,7 @@ public class BookMarkActivity extends BaseActivity {
 
 
     private void initArticleView() {
-
-        SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         mArticleView = (RecyclerView) findViewById(R.id.article_view);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mArticleView.setLayoutManager(mLayoutManager);
@@ -74,10 +74,8 @@ public class BookMarkActivity extends BaseActivity {
                 sendDataRequest();
             }
         });
-
         mNav.setText("Bookmarks");
         mNav.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_bookmark, 0, 0, 0);
-
     }
 
     private void sendDataRequest() {
@@ -87,6 +85,7 @@ public class BookMarkActivity extends BaseActivity {
         } else {
             updateAdapter(new HomeAdapter(this, filterBookMark()));
         }
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     private void updateAdapter(final HomeAdapter adapter) {
