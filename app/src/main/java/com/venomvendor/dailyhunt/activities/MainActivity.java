@@ -1,14 +1,25 @@
 package com.venomvendor.dailyhunt.activities;
 
+import android.Manifest;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,13 +29,34 @@ import com.venomvendor.dailyhunt.R;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private static final int RUNTIME_PERMISSIONS_CODE = 255;
+    private static final int UPDATE_PERMISSIONS = 254;
+
+    private static final String TAG = MainActivity.class.getSimpleName();
+    private final String[] requiredPermissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        initViews();
+        if (isPermissionGranted()) {
+            sendDataRequest();
+        } else {
+            showPermissions();
+        }
+    }
 
+    private void sendDataRequest() {
+        Log.d(TAG, "sendDataRequest");
+    }
+
+    private void initViews() {
+        initFAB();
+        initDrawer();
+    }
+
+    private void initFAB() {
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -33,6 +65,11 @@ public class MainActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
+    }
+
+    private void initDrawer() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -42,6 +79,116 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+    }
+
+
+    private boolean isPermissionGranted() {
+        return Build.VERSION.SDK_INT < 23 ||
+                ContextCompat.checkSelfPermission(this, requiredPermissions[0])
+                        == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void showPermissions() {
+        //Explain user if required.
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+
+            //Educate User
+            showDialog("Required Permission", "External storage access is required to cache " +
+                            "images for your smooth experience.", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            //ask permissions.
+                            ActivityCompat.requestPermissions(MainActivity.this, requiredPermissions,
+                                    RUNTIME_PERMISSIONS_CODE);
+                        }
+                    }
+            );
+
+        } else {
+            //ask permissions.
+            ActivityCompat.requestPermissions(this, requiredPermissions, RUNTIME_PERMISSIONS_CODE);
+        }
+    }
+
+    private void showDialog(String title, String msg,
+                            final DialogInterface.OnClickListener listener) {
+        showDialog(title, msg, listener, null);
+    }
+
+    private void showDialog(String title, String msg,
+                            DialogInterface.OnClickListener listener,
+                            DialogInterface.OnClickListener cancelListener) {
+        if (listener == null) {
+            throw new NullPointerException("listener cannot be null");
+        }
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(false);
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setPositiveButton("OK", listener);
+        if (cancelListener != null) {
+            builder.setNegativeButton("CANCEL", cancelListener);
+        }
+        builder.show();
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case RUNTIME_PERMISSIONS_CODE: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    sendDataRequest();
+                } else {
+                    //Disable the functionality.
+                    permissionsDenied();
+                }
+            }
+        }
+    }
+
+    private void permissionsDenied() {
+        showDialog("Required Permission", "DailyHunt requires access to \"External Storage\"" +
+                " to load images.", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                Intent intent = new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                startActivityForResult(intent, UPDATE_PERMISSIONS);
+            }
+        }, null);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int ignoreResultCode, Intent data) {
+        super.onActivityResult(requestCode, ignoreResultCode, data);
+
+        //don't worry about result code.
+        if (requestCode == UPDATE_PERMISSIONS) {
+            if (isPermissionGranted()) {
+                sendDataRequest();
+            } else {
+                deadLock();
+            }
+        }
+    }
+
+    private void deadLock() {
+        showDialog("Permissions Revoked", "Without External Storage permission, app cannot run.\n" +
+                        " App will exit on press of \"OK\".", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        MainActivity.this.finish();
+                    }
+                }
+        );
     }
 
     @Override
