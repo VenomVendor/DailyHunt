@@ -40,6 +40,7 @@ import com.venomvendor.dailyhunt.util.AppUtils;
 import com.venomvendor.dailyhunt.util.Constants;
 import com.venomvendor.dailyhunt.util.DHHelper;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -392,7 +393,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.main_open_bookmarks:
-                showToast("Open Bookmarks.");
+                Intent intent = new Intent(MainActivity.this, BookMarkActivity.class);
+                intent.putExtra(Constants.ARTICLES, (Serializable) cacheArticles);
+                startActivity(intent);
                 break;
         }
     }

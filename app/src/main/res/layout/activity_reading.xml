@@ -30,7 +30,6 @@
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/chees"
                 app:layout_collapseMode="parallax" />
 
             <android.support.v7.widget.Toolbar
@@ -53,7 +52,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_horizontal"
+            android:gravity="left|start"
             android:orientation="vertical"
             android:paddingBottom="128dp"
             android:paddingLeft="16dp"
@@ -61,24 +60,71 @@
             android:paddingTop="16dp">
 
             <com.venomvendor.dailyhunt.widget.DHTextView
+                android:id="@+id/reading_content_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Just Title"
+                android:textSize="21sp"
+                app:typeface="@string/font_roboto_bold_condensed" />
+
+
+            <com.venomvendor.dailyhunt.widget.DHTextView
                 android:id="@+id/reading_content"
                 android:layout_width="wrap_content"
-                android:textSize="16sp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_medium"
                 android:text="@string/large_text"
+                android:textSize="16sp"
                 app:typeface="@string/font_roboto" />
 
         </LinearLayout>
 
     </android.support.v4.widget.NestedScrollView>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <com.getbase.floatingactionbutton.FloatingActionsMenu
+        android:id="@+id/fabx"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email"
+        app:fab_addButtonColorNormal="@color/white"
+        app:fab_addButtonColorPressed="@color/white_pressed"
+        app:fab_addButtonPlusIconColor="@color/half_black"
+        app:fab_addButtonSize="mini"
+        app:fab_expandDirection="down"
+        app:fab_labelStyle="@style/menu_labels_style"
         app:layout_anchor="@id/appbar"
-        app:layout_anchorGravity="bottom|end" />
+        app:layout_anchorGravity="bottom|end">
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_share"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/white"
+            app:fab_colorPressed="@color/white_pressed"
+            app:fab_icon="@drawable/ic_share"
+            app:fab_title="Share"
+            app:fab_size="mini" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/white"
+            app:fab_colorPressed="@color/white_pressed"
+            app:fab_icon="@drawable/ic_insert_link"
+            app:fab_title="Open"
+            app:fab_size="mini" />
+
+        <com.getbase.floatingactionbutton.FloatingActionButton
+            android:id="@+id/action_fav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:fab_colorNormal="@color/white"
+            app:fab_colorPressed="@color/white_pressed"
+            app:fab_icon="@drawable/ic_un_favorite"
+            app:fab_title="Favorite?"
+            app:fab_size="mini" />
+
+    </com.getbase.floatingactionbutton.FloatingActionsMenu>
 
 </android.support.design.widget.CoordinatorLayout>

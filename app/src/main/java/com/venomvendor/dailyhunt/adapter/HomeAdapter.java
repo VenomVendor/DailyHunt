@@ -25,7 +25,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     private static final String TAG = HomeAdapter.class.getSimpleName();
     private final Activity mActivity;
     private final List<Article> mDataSet;
-    private static OnItemClickListener mItemClickListener;
+    private OnItemClickListener mItemClickListener;
 
     /**
      * Initialize the dataset of the Adapter.
@@ -81,7 +81,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     /**
      * Provide a reference to the type of views that you are using (custom ViewHolder)
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final TextView mTitle;
         ImageView mThumbnail;
         TextView mPreview;
@@ -106,7 +106,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     }
 
     public interface OnItemClickListener {
-        public void onItemClick(View view , int position);
+        public void onItemClick(View view, int position);
     }
 
     public void setOnItemClickListener(final OnItemClickListener itemClickListener) {
