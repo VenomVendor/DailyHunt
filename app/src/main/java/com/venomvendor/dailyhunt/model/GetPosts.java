@@ -11,16 +11,7 @@ import java.util.List;
 @JsonPropertyOrder({
         "articles"
 })
-public class GetPosts {
-
-    /**
-     * Since no status from response, consider all response as success.
-     */
-    @JsonProperty("status")
-    private String status = "success";
-
-    @JsonProperty("error")
-    private String error;
+public class GetPosts extends ResponseStatus {
 
     @JsonProperty("articles")
     private List<Article> articles = new ArrayList<>();
@@ -39,20 +30,6 @@ public class GetPosts {
     }
 
     /**
-     * @return status
-     */
-    public String getStatus() {
-        return status;
-    }
-
-    /**
-     * @param status status
-     */
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    /**
      * @return The articles
      */
     @JsonProperty("articles")
@@ -68,11 +45,4 @@ public class GetPosts {
         this.articles = articles;
     }
 
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
-    }
 }

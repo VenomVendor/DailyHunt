@@ -35,7 +35,7 @@ public class MainActivity extends BaseActivity
     private final String[] requiredPermissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initViews();

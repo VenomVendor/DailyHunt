@@ -6,12 +6,12 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-    "title",
-    "source",
-    "category",
-    "image",
-    "content",
-    "url"
+        "title",
+        "source",
+        "category",
+        "image",
+        "content",
+        "url"
 })
 public class Article {
 
@@ -30,13 +30,11 @@ public class Article {
 
     /**
      * No args constructor for use in serialization
-     * 
      */
     public Article() {
     }
 
     /**
-     * 
      * @param content
      * @param category
      * @param title
@@ -54,9 +52,7 @@ public class Article {
     }
 
     /**
-     * 
-     * @return
-     *     The title
+     * @return The title
      */
     @JsonProperty("title")
     public String getTitle() {
@@ -64,9 +60,7 @@ public class Article {
     }
 
     /**
-     * 
-     * @param title
-     *     The title
+     * @param title The title
      */
     @JsonProperty("title")
     public void setTitle(String title) {
@@ -74,9 +68,7 @@ public class Article {
     }
 
     /**
-     * 
-     * @return
-     *     The source
+     * @return The source
      */
     @JsonProperty("source")
     public String getSource() {
@@ -84,9 +76,7 @@ public class Article {
     }
 
     /**
-     * 
-     * @param source
-     *     The source
+     * @param source The source
      */
     @JsonProperty("source")
     public void setSource(String source) {
@@ -94,9 +84,7 @@ public class Article {
     }
 
     /**
-     * 
-     * @return
-     *     The category
+     * @return The category
      */
     @JsonProperty("category")
     public String getCategory() {
@@ -104,9 +92,7 @@ public class Article {
     }
 
     /**
-     * 
-     * @param category
-     *     The category
+     * @param category The category
      */
     @JsonProperty("category")
     public void setCategory(String category) {
@@ -114,9 +100,7 @@ public class Article {
     }
 
     /**
-     * 
-     * @return
-     *     The image
+     * @return The image
      */
     @JsonProperty("image")
     public String getImage() {
@@ -124,9 +108,7 @@ public class Article {
     }
 
     /**
-     * 
-     * @param image
-     *     The image
+     * @param image The image
      */
     @JsonProperty("image")
     public void setImage(String image) {
@@ -134,9 +116,7 @@ public class Article {
     }
 
     /**
-     * 
-     * @return
-     *     The content
+     * @return The content
      */
     @JsonProperty("content")
     public String getContent() {
@@ -144,9 +124,7 @@ public class Article {
     }
 
     /**
-     * 
-     * @param content
-     *     The content
+     * @param content The content
      */
     @JsonProperty("content")
     public void setContent(String content) {
@@ -154,9 +132,7 @@ public class Article {
     }
 
     /**
-     * 
-     * @return
-     *     The url
+     * @return The url
      */
     @JsonProperty("url")
     public String getUrl() {
@@ -164,9 +140,7 @@ public class Article {
     }
 
     /**
-     * 
-     * @param url
-     *     The url
+     * @param url The url
      */
     @JsonProperty("url")
     public void setUrl(String url) {

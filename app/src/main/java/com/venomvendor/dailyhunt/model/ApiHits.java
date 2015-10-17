@@ -8,16 +8,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({
         "api_hits"
 })
-public class ApiHits {
-
-    /**
-     * Since no status from response, consider all response as success.
-     */
-    @JsonProperty("status")
-    private String status = "success";
-
-    @JsonProperty("error")
-    private String error;
+public class ApiHits extends ResponseStatus {
 
     @JsonProperty("api_hits")
     private String apiHits;
@@ -36,28 +27,6 @@ public class ApiHits {
     @JsonProperty("api_hits")
     public void setApiHits(String apiHits) {
         this.apiHits = apiHits;
-    }
-
-    /**
-     * @return status
-     */
-    public String getStatus() {
-        return status;
-    }
-
-    /**
-     * @param status status
-     */
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
     }
 
 }
