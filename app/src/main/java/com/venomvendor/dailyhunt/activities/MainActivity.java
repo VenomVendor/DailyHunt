@@ -19,6 +19,8 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -204,6 +206,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mCategories.add("Please wait...");
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, mCategories);
         mFilter.setAdapter(adapter);
+        mFilter.setEnabled(false);
         mFilter.setOnItemSelectedListener(this);
     }
 
@@ -225,6 +228,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private void sendDataRequest() {
         Log.d(TAG, "sendDataRequest");
         mSwipeRefreshLayout.setRefreshing(true);
+
+        mCategories.clear();
+        mCategories.add("Please wait...");
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, mCategories);
+        mFilter.setAdapter(adapter);
+        mFilter.setEnabled(false);
+
         NetworkHandler.getInstance().getPosts();
         NetworkHandler.getInstance().getApiCount();
     }
@@ -235,6 +245,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         if (apiHits.isSuccess()) {
             mApiCount.setText(String.format(Locale.getDefault(), "API Hits : %s",
                     apiHits.getApiHits()));
+            int color = mApiCount.getCurrentTextColor() == getResources().getColor(R.color.colorPrimary)
+                    ? getResources().getColor(R.color.colorAccent) : getResources().getColor(R.color.colorPrimary);
+            mApiCount.setTextColor(color);
+            ScaleAnimation animation = new ScaleAnimation(1.5f, 1.0f, 0.5f, 1.0f,
+                    Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+            animation.setDuration(200);
+            animation.setFillAfter(true);
+            mApiCount.startAnimation(animation);
         }
     }
 
@@ -257,6 +275,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item, mCategories);
         mFilter.setAdapter(adapter);
+        mFilter.setEnabled(true);
 
         mFeedCount.setText(String.format(Locale.getDefault(), "Feed Source : %s",
                 mCategories.size() - 1));
