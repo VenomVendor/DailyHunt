@@ -25,6 +25,7 @@ public class DHHelper {
     public static void removeRetry() {
         DHApplication.getSharedPreferences().remove(KEYS.RETRY_COUNT);
     }
+
     /**
      * Method to hide keyPad
      *

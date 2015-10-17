@@ -15,7 +15,6 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -27,6 +26,7 @@ import com.venomvendor.dailyhunt.R;
 import com.venomvendor.dailyhunt.core.DHApplication;
 import com.venomvendor.dailyhunt.model.ApiHits;
 import com.venomvendor.dailyhunt.model.GetPosts;
+import com.venomvendor.dailyhunt.network.Connection;
 import com.venomvendor.dailyhunt.network.NetworkHandler;
 import com.venomvendor.dailyhunt.util.DHHelper;
 
@@ -37,7 +37,6 @@ import vee.android.lib.SimpleSharedPreferences;
 public abstract class BaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private final String TAG = BaseActivity.class.getSimpleName();
     private final SparseArrayCompat<AlertDialog> mDialogs = new SparseArrayCompat<>(1);
     protected SimpleSharedPreferences mPrefs;
 
@@ -58,6 +57,15 @@ public abstract class BaseActivity extends AppCompatActivity
         mPrefs = DHApplication.getSharedPreferences();
         setContentView(baseView());
         initViews();
+        if (!Connection.isAvail()) {
+            showCustomDialog("No Internet", "Data connectivity is un available.",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+        }
     }
 
     @LayoutRes
@@ -115,6 +123,9 @@ public abstract class BaseActivity extends AppCompatActivity
 
         toggle.setDrawerIndicatorEnabled(isDrawerEnabled());
         drawer.setEnabled(isDrawerEnabled());
+        if (!isDrawerEnabled()) {
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        }
     }
 
     @Override
@@ -127,7 +138,6 @@ public abstract class BaseActivity extends AppCompatActivity
         }
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -185,13 +195,9 @@ public abstract class BaseActivity extends AppCompatActivity
     @CallSuper
     @Subscribe(sticky = true)
     public void onEventApiCount(ApiHits apiHits) {
-        if (apiHits.isSuccess()) {
-            Log.d(TAG, "posts.ApiHits():" + apiHits.getApiHits());
-        } else {
+        if (!apiHits.isSuccess()) {
             showToast(apiHits.getError());
         }
-        //Battery Killer.
-        // NetworkHandler.getInstance().getApiCount(); TODO
     }
 
     @CallSuper
@@ -199,7 +205,6 @@ public abstract class BaseActivity extends AppCompatActivity
     public void onEventPosts(GetPosts posts) {
         if (posts.isSuccess()) {
             DHHelper.removeRetry();
-            Log.d(TAG, "posts.GetPosts():" + posts.getArticles().size());
         } else {
             if (DHHelper.hasRetriesLeft()) {
                 //RetryHere.

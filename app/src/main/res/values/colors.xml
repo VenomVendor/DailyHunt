@@ -8,4 +8,12 @@
     <color name="text_color_title">#000</color>
     <color name="text_color_txt">#222</color>
     <color name="text_color_odd">#ADADAD</color>
+
+    <color name="black_semi_transparent">#B2000000</color>
+    <color name="background">#e5e5e5</color>
+    <color name="half_black">#808080</color>
+    <color name="white">#fafafa</color>
+    <color name="white_pressed">#f1f1f1</color>
+    <color name="pink">#e91e63</color>
+    <color name="pink_pressed">#ec407a</color>
 </resources>

@@ -16,7 +16,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -35,10 +34,13 @@ import com.venomvendor.dailyhunt.adapter.HomeAdapter;
 import com.venomvendor.dailyhunt.model.ApiHits;
 import com.venomvendor.dailyhunt.model.Article;
 import com.venomvendor.dailyhunt.model.GetPosts;
+import com.venomvendor.dailyhunt.network.Connection;
 import com.venomvendor.dailyhunt.network.NetworkHandler;
 import com.venomvendor.dailyhunt.util.AppUtils;
+import com.venomvendor.dailyhunt.util.Constants;
 import com.venomvendor.dailyhunt.util.DHHelper;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -48,17 +50,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private static final int RUNTIME_PERMISSIONS_CODE = 255;
     private static final int UPDATE_PERMISSIONS = 254;
-    private static final String TAG = MainActivity.class.getSimpleName();
     private final String[] requiredPermissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     private Spinner mFilter;
     private TextView mFeedCount;
     private TextView mApiCount;
 
-    protected RecyclerView mArticleView;
-    protected HomeAdapter mAdapter;
-    protected RecyclerView.LayoutManager mLayoutManager;
-    SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView mArticleView;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private List<Article> cacheArticles = new ArrayList<>();
     private List<String> mCategories = new ArrayList<>();
@@ -156,16 +156,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void setOldData() {
-        mAdapter = new HomeAdapter(this, cacheArticles);
-        mArticleView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
+        updateAdapter(new HomeAdapter(this, cacheArticles));
     }
 
     private void doFilter(String query) {
         //TODO-Animate WhileAdding.
-        mAdapter = new HomeAdapter(this, filter(cacheArticles, query.toLowerCase().trim()));
-        mArticleView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
+        updateAdapter(new HomeAdapter(this, filter(cacheArticles, query.toLowerCase().trim())));
     }
 
     private List<Article> filter(List<Article> articles, String query) {
@@ -216,7 +212,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mArticleView = (RecyclerView) findViewById(R.id.article_view);
         mLayoutManager = new LinearLayoutManager(this);
         mArticleView.setLayoutManager(mLayoutManager);
-
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -226,12 +221,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void sendDataRequest() {
-        Log.d(TAG, "sendDataRequest");
+        if (!Connection.isAvail()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+            showCustomDialog("No Internet", "Data connectivity is un available.",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            return;
+        }
         mSwipeRefreshLayout.setRefreshing(true);
 
         mCategories.clear();
         mCategories.add("Please wait...");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, mCategories);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, mCategories);
         mFilter.setAdapter(adapter);
         mFilter.setEnabled(false);
 
@@ -283,10 +289,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         CustomAnimator customAnimator = new CustomAnimator();
         mArticleView.setItemAnimator(customAnimator);
 
-        mAdapter = new HomeAdapter(this, articles);
-        mArticleView.setAdapter(mAdapter);
         cacheArticles = articles;
-        mAdapter.notifyDataSetChanged();
+        updateAdapter(new HomeAdapter(this, articles));
+
+    }
+
+    private void updateAdapter(final HomeAdapter adapter) {
+        mArticleView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+        adapter.setOnItemClickListener(new HomeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(MainActivity.this, ReadingActivity.class);
+                intent.putExtra(Constants.CATEGORY, cacheArticles.get(position));
+                startActivity(intent);
+            }
+        });
     }
 
     private boolean isPermissionGranted() {
@@ -385,7 +403,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.main_open_bookmarks:
-                showToast("Open Bookmarks.");
+                Intent intent = new Intent(MainActivity.this, BookMarkActivity.class);
+                intent.putExtra(Constants.ARTICLES, (Serializable) cacheArticles);
+                startActivity(intent);
                 break;
         }
     }
@@ -396,9 +416,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             setOldData();
             return;
         }
-        mAdapter = new HomeAdapter(this, filterCategory(cacheArticles, mCategories.get(position)));
-        mArticleView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
+        updateAdapter(new HomeAdapter(this, filterCategory(cacheArticles, mCategories.get(position))));
     }
 
     @Override
