@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="font_pt_sans">PT-Sans.ttf</string>
+    <string name="font_roboto_bold_condensed">Roboto-BoldCondensed.ttf</string>
+    <string name="font_roboto_condensed">Roboto-Condensed.ttf</string>
+    <string name="font_roboto_italic">Roboto-Italic.ttf</string>
+    <string name="font_roboto_light">Roboto-Light.ttf</string>
+    <string name="font_roboto_medium">Roboto-Medium.ttf</string>
+    <string name="font_roboto">Roboto-Regular.ttf</string>
+    <string name="font_roboto_thin">Roboto-Thin.ttf</string>
+</resources>
