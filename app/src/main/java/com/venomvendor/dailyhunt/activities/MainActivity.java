@@ -50,16 +50,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
     private static final int RUNTIME_PERMISSIONS_CODE = 255;
     private static final int UPDATE_PERMISSIONS = 254;
-    private static final String TAG = MainActivity.class.getSimpleName();
     private final String[] requiredPermissions = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     private Spinner mFilter;
     private TextView mFeedCount;
     private TextView mApiCount;
 
-    protected RecyclerView mArticleView;
-    protected RecyclerView.LayoutManager mLayoutManager;
-    SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView mArticleView;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
 
     private List<Article> cacheArticles = new ArrayList<>();
     private List<String> mCategories = new ArrayList<>();

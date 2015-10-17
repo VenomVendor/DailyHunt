@@ -37,7 +37,6 @@ import vee.android.lib.SimpleSharedPreferences;
 public abstract class BaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private final String TAG = BaseActivity.class.getSimpleName();
     private final SparseArrayCompat<AlertDialog> mDialogs = new SparseArrayCompat<>(1);
     protected SimpleSharedPreferences mPrefs;
 

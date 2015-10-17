@@ -39,11 +39,11 @@
                 android:id="@+id/list_home_title"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/chevron"
+                android:layout_toStartOf="@+id/chevron"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="TextView"
-                android:layout_toLeftOf="@+id/chevron"
-                android:layout_toStartOf="@+id/chevron"
                 android:textColor="@color/text_color_title"
                 android:textSize="@dimen/list_home_title"
                 app:typeface="@string/font_roboto_condensed" />

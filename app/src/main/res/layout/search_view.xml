@@ -13,7 +13,6 @@
         android:layout_margin="@dimen/margin_tiny">
 
         <EditText
-            android:imeOptions="actionSearch"
             android:id="@+id/search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -25,6 +24,7 @@
             android:drawablePadding="@dimen/margin_tiny"
             android:gravity="center|left"
             android:hint="Search (by title, source)"
+            android:imeOptions="actionSearch"
             android:padding="@dimen/margin_small"
             android:singleLine="true" />
 

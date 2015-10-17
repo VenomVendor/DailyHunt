@@ -21,7 +21,6 @@ import java.util.List;
  * Provide views to RecyclerView with data from mDataSet.
  */
 public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
-    private static final String TAG = HomeAdapter.class.getSimpleName();
     private final Activity mActivity;
     private final List<Article> mDataSet;
     private OnItemClickListener mItemClickListener;
@@ -75,6 +74,14 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
         return mDataSet.size();
     }
 
+    public void setOnItemClickListener(final OnItemClickListener itemClickListener) {
+        mItemClickListener = itemClickListener;
+    }
+
+    public interface OnItemClickListener {
+        public void onItemClick(View view, int position);
+    }
+
     /**
      * Provide a reference to the type of views that you are using (custom ViewHolder)
      */
@@ -100,13 +107,5 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
                 mItemClickListener.onItemClick(v, getLayoutPosition());
             }
         }
-    }
-
-    public interface OnItemClickListener {
-        public void onItemClick(View view, int position);
-    }
-
-    public void setOnItemClickListener(final OnItemClickListener itemClickListener) {
-        mItemClickListener = itemClickListener;
     }
 }

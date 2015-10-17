@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
     android:layout_weight="2"
-    app:layout_collapseMode="pin"
     android:background="?attr/colorPrimary"
+    app:layout_collapseMode="pin"
     app:popupTheme="@style/AppTheme.PopupOverlay">
 
     <LinearLayout

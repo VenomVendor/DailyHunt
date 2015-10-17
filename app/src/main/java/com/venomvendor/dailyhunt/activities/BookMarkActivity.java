@@ -20,15 +20,10 @@ import vee.android.lib.SimpleSharedPreferences;
 
 public class BookMarkActivity extends BaseActivity {
 
-    private static final String TAG = BookMarkActivity.class.getSimpleName();
-
-    protected RecyclerView mArticleView;
-    protected RecyclerView.LayoutManager mLayoutManager;
-    SwipeRefreshLayout mSwipeRefreshLayout;
+    private RecyclerView mArticleView;
+    private SimpleSharedPreferences mPref;
     private List<Article> cacheArticles = new ArrayList<>();
     private List<Article> mBookMarkedArticles = new ArrayList<>();
-
-    SimpleSharedPreferences mPref;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,9 +64,9 @@ public class BookMarkActivity extends BaseActivity {
 
     private void initArticleView() {
 
-        mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
+        SwipeRefreshLayout mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         mArticleView = (RecyclerView) findViewById(R.id.article_view);
-        mLayoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         mArticleView.setLayoutManager(mLayoutManager);
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override

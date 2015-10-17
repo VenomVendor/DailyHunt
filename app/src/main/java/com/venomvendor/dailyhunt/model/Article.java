@@ -18,6 +18,15 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 })
 public class Article implements Parcelable {
 
+    public static final Parcelable.Creator<Article> CREATOR = new Parcelable.Creator<Article>() {
+        public Article createFromParcel(Parcel source) {
+            return new Article(source);
+        }
+
+        public Article[] newArray(int size) {
+            return new Article[size];
+        }
+    };
     @JsonProperty("title")
     private String title;
     @JsonProperty("source")
@@ -52,6 +61,15 @@ public class Article implements Parcelable {
         this.image = image;
         this.content = content;
         this.url = url;
+    }
+
+    protected Article(Parcel in) {
+        this.title = in.readString();
+        this.source = in.readString();
+        this.category = in.readString();
+        this.image = in.readString();
+        this.content = in.readString();
+        this.url = in.readString();
     }
 
     /**
@@ -164,23 +182,4 @@ public class Article implements Parcelable {
         dest.writeString(this.content);
         dest.writeString(this.url);
     }
-
-    protected Article(Parcel in) {
-        this.title = in.readString();
-        this.source = in.readString();
-        this.category = in.readString();
-        this.image = in.readString();
-        this.content = in.readString();
-        this.url = in.readString();
-    }
-
-    public static final Parcelable.Creator<Article> CREATOR = new Parcelable.Creator<Article>() {
-        public Article createFromParcel(Parcel source) {
-            return new Article(source);
-        }
-
-        public Article[] newArray(int size) {
-            return new Article[size];
-        }
-    };
 }

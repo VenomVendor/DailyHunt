@@ -32,9 +32,6 @@ public class Constants {
     }
 
     public static class KEYS {
-        public static final String LAST_JSON = "LAST_JSON";
-        public static final String OPENED_TIMES_COUNT = "OPENED_TIMES_COUNT";
-        public static final String POST_RETRY_COUNT = "POST_RETRY_COUNT";
         public static final String RETRY_COUNT = "RETRY_COUNT";
     }
 

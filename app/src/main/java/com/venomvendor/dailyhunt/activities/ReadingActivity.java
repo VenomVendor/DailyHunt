@@ -3,6 +3,8 @@ package com.venomvendor.dailyhunt.activities;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.CallSuper;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -19,17 +21,21 @@ import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.venomvendor.dailyhunt.R;
 import com.venomvendor.dailyhunt.core.DHApplication;
 import com.venomvendor.dailyhunt.model.Article;
+import com.venomvendor.dailyhunt.model.GetPosts;
+import com.venomvendor.dailyhunt.network.NetworkHandler;
 import com.venomvendor.dailyhunt.util.Constants;
+import com.venomvendor.dailyhunt.util.DHHelper;
 
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
 import vee.android.lib.SimpleSharedPreferences;
 
 public class ReadingActivity extends AppCompatActivity implements View.OnClickListener {
 
-    FloatingActionButton mFav;
-    FloatingActionButton mLink;
-    FloatingActionButton mShare;
-    Article mArticle;
-    SimpleSharedPreferences mPref;
+    private FloatingActionButton mFav;
+    private Article mArticle;
+    private SimpleSharedPreferences mPref;
+    private Handler mHandler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,19 +47,35 @@ public class ReadingActivity extends AppCompatActivity implements View.OnClickLi
         mArticle = bundle.getParcelable(Constants.CATEGORY);
         if (mArticle == null) {
             finish();
+            return;
         }
 
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
-        ActionBar actionbar = getSupportActionBar();
-        if (actionbar != null) {
-            actionbar.setDisplayHomeAsUpEnabled(true);
-        }
+        initActionBar();
 
-        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
-        final String title = mArticle.getCategory();
-        collapsingToolbar.setTitle(title);
+        initContent();
 
+        NetworkHandler.getInstance().getPosts();
+
+        initFAB();
+
+        updateFavIcon();
+    }
+
+    private void initFAB() {
+        mFav = (FloatingActionButton) findViewById(R.id.action_fav);
+        FloatingActionButton mLink = (FloatingActionButton) findViewById(R.id.action_link);
+        FloatingActionButton mShare = (FloatingActionButton) findViewById(R.id.action_share);
+
+        mFav.setOnClickListener(this);
+        mLink.setOnClickListener(this);
+        mShare.setOnClickListener(this);
+    }
+
+    private void initContent() {
         TextView contentTitle = (TextView) findViewById(R.id.reading_content_title);
+        TextView mFlashNews = (TextView) findViewById(R.id.flash_news);
+        mFlashNews.setText(null);
+
         contentTitle.setText(String.format("%s under %s by %s", mArticle.getTitle(),
                 mArticle.getCategory(), mArticle.getSource()));
 
@@ -73,16 +95,18 @@ public class ReadingActivity extends AppCompatActivity implements View.OnClickLi
                 .priority(Priority.IMMEDIATE)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(backDrop);
+    }
 
-        mFav = (FloatingActionButton) findViewById(R.id.action_fav);
-        mLink = (FloatingActionButton) findViewById(R.id.action_link);
-        mShare = (FloatingActionButton) findViewById(R.id.action_share);
+    private void initActionBar() {
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
+        ActionBar actionbar = getSupportActionBar();
+        if (actionbar != null) {
+            actionbar.setDisplayHomeAsUpEnabled(true);
+        }
 
-        mFav.setOnClickListener(this);
-        mLink.setOnClickListener(this);
-        mShare.setOnClickListener(this);
-
-        updateFavIcon();
+        CollapsingToolbarLayout collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
+        final String title = mArticle.getCategory();
+        collapsingToolbar.setTitle(title);
     }
 
     private void updateFavIcon() {
@@ -94,17 +118,6 @@ public class ReadingActivity extends AppCompatActivity implements View.OnClickLi
         } else {
             mFav.setIcon(R.drawable.ic_un_favorite);
             mFav.setTitle("Favorite?");
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.action_fav) {
-            doFavUnFav();
-        } else if (v.getId() == R.id.action_link) {
-            openLink();
-        } else if (v.getId() == R.id.action_share) {
-            shareArticle();
         }
     }
 
@@ -129,4 +142,68 @@ public class ReadingActivity extends AppCompatActivity implements View.OnClickLi
         sendIntent.setType("text/plain");
         startActivity(Intent.createChooser(sendIntent, "Send via..."));
     }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.action_fav) {
+            doFavUnFav();
+        } else if (v.getId() == R.id.action_link) {
+            openLink();
+        } else if (v.getId() == R.id.action_share) {
+            shareArticle();
+        }
+    }
+
+    @CallSuper
+    @Subscribe
+    public void onEventPosts(GetPosts posts) {
+        if (posts.isSuccess()) {
+            DHHelper.removeRetry();
+        } else if (DHHelper.hasRetriesLeft()) {
+            //RetryHere.
+            DHHelper.incrementRetry();
+            NetworkHandler.getInstance().getPosts();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerBus();
+    }
+
+    @Override
+    protected void onStop() {
+        unregisterBus();
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        unregisterBus();
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        registerBus();
+    }
+
+    private EventBus getBus() {
+        return EventBus.getDefault();
+    }
+
+    @CallSuper
+    public void registerBus() {
+        if (!getBus().isRegistered(this)) {
+            getBus().register(this);
+        }
+    }
+
+    @CallSuper
+    public void unregisterBus() {
+        getBus().unregister(this);
+    }
+
 }
