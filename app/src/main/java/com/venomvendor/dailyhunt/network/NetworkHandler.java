@@ -18,6 +18,7 @@ import static com.venomvendor.dailyhunt.util.Constants.API.LIST_NEWS;
 import static com.venomvendor.dailyhunt.util.Constants.ResponseType.JSON;
 
 public class NetworkHandler {
+
     private static NetworkHandler mInstance;
 
     public static NetworkHandler getInstance() {
@@ -27,7 +28,7 @@ public class NetworkHandler {
         return mInstance;
     }
 
-    public EventBus getBus() {
+    private EventBus getBus() {
         return EventBus.getDefault();
     }
 

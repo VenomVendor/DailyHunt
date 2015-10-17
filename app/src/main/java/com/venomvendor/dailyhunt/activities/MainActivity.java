@@ -49,6 +49,7 @@ public class MainActivity extends BaseActivity
     private void sendDataRequest() {
         Log.d(TAG, "sendDataRequest");
         NetworkHandler.getInstance().getPosts();
+        NetworkHandler.getInstance().getApiCount();
     }
 
     private void initViews() {

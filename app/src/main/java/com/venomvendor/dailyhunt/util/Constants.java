@@ -13,11 +13,20 @@ public class Constants {
     public static final boolean RELEASE = !DEBUG;
 
     public static final int MAX_RETRY_COUNT = 3;
-
-    public static final String END_POINT = "https://dailyhunt.0x10.info/api/dailyhunt";
-
+    public static final String END_POINT = "https://dailyhunt.0x10.info/api/";
+    public static final String PATH = "dailyhunt";
     public static final String SUCCESS = "success";
     public static final String ERROR = "error";
+
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({ResponseType.JSON, ResponseType.XML})
+    public @interface ResponseTypes {
+    }
+
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({API.LIST_NEWS, API.API_HITS})
+    public @interface QueryTypes {
+    }
 
     public static class KEYS {
         public static final String LAST_JSON = "LAST_JSON";
@@ -30,16 +39,10 @@ public class Constants {
         public static final String JSON = "json";
         private static final String XML = "xml";
     }
-    @Retention(RetentionPolicy.SOURCE)
-    @StringDef({ResponseType.JSON, ResponseType.XML})
-    public @interface ResponseTypes {}
 
     public static class API {
         public static final String LIST_NEWS = "list_news";
         public static final String API_HITS = "api_hits";
     }
-    @Retention(RetentionPolicy.SOURCE)
-    @StringDef({API.LIST_NEWS, API.API_HITS})
-    public @interface QueryTypes {}
 
 }
