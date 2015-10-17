@@ -9,12 +9,12 @@ public class Constants {
     /**
      * Change this flag to <b>false</b> during release
      */
-    public static final boolean DEBUG = true; // TODO - Set false
+    public static final boolean DEBUG = false; // TODO - Set false
     public static final boolean RELEASE = !DEBUG;
 
     public static final int MAX_RETRY_COUNT = 3;
-    public static final String END_POINT = "https://dailyhunt.0x10.info/api/";
-    public static final String PATH = "dailyhunt";
+    public static final String END_POINT = "https://dailyhunt.0x10.info/";
+    public static final String PATH = "api/dailyhunt";
     public static final String SUCCESS = "success";
     public static final String ERROR = "error";
     public static final String CATEGORY = "category";

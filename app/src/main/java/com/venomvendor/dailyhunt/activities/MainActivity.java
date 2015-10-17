@@ -16,7 +16,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Animation;
@@ -35,6 +34,7 @@ import com.venomvendor.dailyhunt.adapter.HomeAdapter;
 import com.venomvendor.dailyhunt.model.ApiHits;
 import com.venomvendor.dailyhunt.model.Article;
 import com.venomvendor.dailyhunt.model.GetPosts;
+import com.venomvendor.dailyhunt.network.Connection;
 import com.venomvendor.dailyhunt.network.NetworkHandler;
 import com.venomvendor.dailyhunt.util.AppUtils;
 import com.venomvendor.dailyhunt.util.Constants;
@@ -222,12 +222,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void sendDataRequest() {
-        Log.d(TAG, "sendDataRequest");
+        if (!Connection.isAvail()) {
+            mSwipeRefreshLayout.setRefreshing(false);
+            showCustomDialog("No Internet", "Data connectivity is un available.",
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+            return;
+        }
         mSwipeRefreshLayout.setRefreshing(true);
 
         mCategories.clear();
         mCategories.add("Please wait...");
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, mCategories);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_dropdown_item, mCategories);
         mFilter.setAdapter(adapter);
         mFilter.setEnabled(false);
 

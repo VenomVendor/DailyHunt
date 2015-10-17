@@ -8,7 +8,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -43,8 +42,6 @@ public class ReadingActivity extends AppCompatActivity implements View.OnClickLi
         if (mArticle == null) {
             finish();
         }
-
-        Log.d("ReadingActivity", mArticle.getContent());
 
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         ActionBar actionbar = getSupportActionBar();
