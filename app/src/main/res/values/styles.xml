@@ -34,7 +34,6 @@
         <item name="android:typeface">serif</item>
     </style>
 
-
     <style name="menu_labels_style">
         <item name="android:typeface">serif</item>
         <item name="android:background">@drawable/fab_label_bg</item>

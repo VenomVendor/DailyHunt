@@ -9,7 +9,6 @@ import android.util.AttributeSet;
 import com.venomvendor.dailyhunt.R;
 import com.venomvendor.dailyhunt.util.TypefaceCache;
 
-
 public class DHTextView extends AppCompatTextView {
     public DHTextView(Context context) {
         super(context);

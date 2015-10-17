@@ -82,12 +82,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         return R.layout.activity_main;
     }
 
-
     @Override
     protected boolean isDrawerEnabled() {
         return true;
     }
-
 
     private void initLocalViews() {
 
@@ -131,7 +129,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 search.setText("");
             }
         });
-
 
         search.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -178,7 +175,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         }
         return filteredArticles;
     }
-
 
     private List<Article> filterCategory(List<Article> articles, String query) {
         final List<Article> filteredArticles = new ArrayList<>();
@@ -342,7 +338,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             ActivityCompat.requestPermissions(this, requiredPermissions, RUNTIME_PERMISSIONS_CODE);
         }
     }
-
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
