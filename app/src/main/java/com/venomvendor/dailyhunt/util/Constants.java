@@ -1,5 +1,10 @@
 package com.venomvendor.dailyhunt.util;
 
+import android.support.annotation.StringDef;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 public class Constants {
     /**
      * Change this flag to <b>false</b> during release
@@ -10,9 +15,7 @@ public class Constants {
     public static final int MAX_RETRY_COUNT = 3;
 
     public static final String END_POINT = "https://dailyhunt.0x10.info/api/dailyhunt";
-    public static final String RESPONSE_TYPE = "json";
-    public static final String LIST_NEWS = "list_news";
-    public static final String API_HITS = "api_hits";
+
     public static final String SUCCESS = "success";
     public static final String ERROR = "error";
 
@@ -22,4 +25,21 @@ public class Constants {
         public static final String POST_RETRY_COUNT = "POST_RETRY_COUNT";
         public static final String RETRY_COUNT = "RETRY_COUNT";
     }
+
+    public static class ResponseType {
+        public static final String JSON = "json";
+        private static final String XML = "xml";
+    }
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({ResponseType.JSON, ResponseType.XML})
+    public @interface ResponseTypes {}
+
+    public static class API {
+        public static final String LIST_NEWS = "list_news";
+        public static final String API_HITS = "api_hits";
+    }
+    @Retention(RetentionPolicy.SOURCE)
+    @StringDef({API.LIST_NEWS, API.API_HITS})
+    public @interface QueryTypes {}
+
 }

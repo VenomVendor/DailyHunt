@@ -63,10 +63,10 @@ public class BaseActivity extends AppCompatActivity {
 
 
     @CallSuper
-    @Subscribe
+    @Subscribe(sticky = true)
     public void onEventApiCount(ApiHits apiHits) {
         if (apiHits.isSuccess()) {
-            Log.d(TAG, "posts.getPosts():" + apiHits.getApiHits());
+            Log.d(TAG, "posts.ApiHits():" + apiHits.getApiHits());
         } else {
             showToast(apiHits.getError());
         }
@@ -76,7 +76,7 @@ public class BaseActivity extends AppCompatActivity {
     @Subscribe
     public void onEventPosts(GetPosts posts) {
         if (posts.isSuccess()) {
-            Log.d(TAG, "posts.getPosts():" + posts.getArticles().size());
+            Log.d(TAG, "posts.GetPosts():" + posts.getArticles().size());
         } else {
             showToast(posts.getError());
         }
