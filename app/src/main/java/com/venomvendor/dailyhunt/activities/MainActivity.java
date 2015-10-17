@@ -16,8 +16,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -25,8 +23,9 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.venomvendor.dailyhunt.R;
+import com.venomvendor.dailyhunt.network.NetworkHandler;
 
-public class MainActivity extends AppCompatActivity
+public class MainActivity extends BaseActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private static final int RUNTIME_PERMISSIONS_CODE = 255;
@@ -49,6 +48,7 @@ public class MainActivity extends AppCompatActivity
 
     private void sendDataRequest() {
         Log.d(TAG, "sendDataRequest");
+        NetworkHandler.getInstance().getPosts();
     }
 
     private void initViews() {
@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
             //Educate User
-            showDialog("Required Permission", "External storage access is required to cache " +
+            showCustomDialog("Required Permission", "External storage access is required to cache " +
                             "images for your smooth experience.", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -102,6 +102,12 @@ public class MainActivity extends AppCompatActivity
                             //ask permissions.
                             ActivityCompat.requestPermissions(MainActivity.this, requiredPermissions,
                                     RUNTIME_PERMISSIONS_CODE);
+                        }
+                    }, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            deadLock();
                         }
                     }
             );
@@ -112,29 +118,6 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void showDialog(String title, String msg,
-                            final DialogInterface.OnClickListener listener) {
-        showDialog(title, msg, listener, null);
-    }
-
-    private void showDialog(String title, String msg,
-                            DialogInterface.OnClickListener listener,
-                            DialogInterface.OnClickListener cancelListener) {
-        if (listener == null) {
-            throw new NullPointerException("listener cannot be null");
-        }
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setCancelable(false);
-        builder.setTitle(title);
-        builder.setMessage(msg);
-        builder.setPositiveButton("OK", listener);
-        if (cancelListener != null) {
-            builder.setNegativeButton("CANCEL", cancelListener);
-        }
-        builder.show();
-
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[],
@@ -153,7 +136,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void permissionsDenied() {
-        showDialog("Required Permission", "DailyHunt requires access to \"External Storage\"" +
+        showCustomDialog("Required Permission", "DailyHunt requires access to \"External Storage\"" +
                 " to load images.", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -162,7 +145,7 @@ public class MainActivity extends AppCompatActivity
                 intent.setData(Uri.parse("package:" + getPackageName()));
                 startActivityForResult(intent, UPDATE_PERMISSIONS);
             }
-        }, null);
+        });
     }
 
     @Override
@@ -180,7 +163,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void deadLock() {
-        showDialog("Permissions Revoked", "Without External Storage permission, app cannot run.\n" +
+        showCustomDialog("Permissions Revoked", "Without External Storage permission, app cannot run.\n" +
                         " App will exit on press of \"OK\".", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
