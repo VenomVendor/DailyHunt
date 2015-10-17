@@ -17,7 +17,7 @@ public class GlideConfiguration implements GlideModule {
     @Override
     public void applyOptions(Context context, GlideBuilder builder) {
         // Apply options to the builder here.
-        DiskCache.Factory diskCacheFactory = new ExternalGlideCacheDiskCacheFactory(context);
+        DiskCache.Factory diskCacheFactory = new ExternalGlideCacheDiskCacheFactory();
         builder.setDiskCache(diskCacheFactory);
         builder.setDecodeFormat(DecodeFormat.PREFER_ARGB_8888);
     }
@@ -29,15 +29,15 @@ public class GlideConfiguration implements GlideModule {
 
     private class ExternalGlideCacheDiskCacheFactory extends DiskLruCacheFactory {
 
-        public ExternalGlideCacheDiskCacheFactory(Context context) {
-            this(context, DiskCache.Factory.DEFAULT_DISK_CACHE_SIZE);
+        public ExternalGlideCacheDiskCacheFactory() {
+            this(DiskCache.Factory.DEFAULT_DISK_CACHE_SIZE);
         }
 
-        public ExternalGlideCacheDiskCacheFactory(Context context, int diskCacheSize) {
-            this(context, DiskCache.Factory.DEFAULT_DISK_CACHE_DIR, diskCacheSize);
+        public ExternalGlideCacheDiskCacheFactory(int diskCacheSize) {
+            this(DiskCache.Factory.DEFAULT_DISK_CACHE_DIR, diskCacheSize);
         }
 
-        public ExternalGlideCacheDiskCacheFactory(final Context context, final String diskCacheName, int diskCacheSize) {
+        public ExternalGlideCacheDiskCacheFactory(final String diskCacheName, int diskCacheSize) {
             super(new CacheDirectoryGetter() {
                 @Override
                 public File getCacheDirectory() {
