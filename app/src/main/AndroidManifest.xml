@@ -29,9 +29,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <meta-data
             android:name="com.venomvendor.dailyhunt.core.GlideConfiguration"
             android:value="GlideModule" />
+
+        <activity
+            android:name=".activities.ReadingActivity"
+            android:label="@string/title_activity_reading"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.venomvendor.dailyhunt.activities.MainActivity" />
+        </activity>
+        <activity
+            android:name=".activities.BookMarkActivity"
+            android:parentActivityName=".activities.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.venomvendor.dailyhunt.activities.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

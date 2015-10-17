@@ -17,6 +17,9 @@ public class Constants {
     public static final String PATH = "dailyhunt";
     public static final String SUCCESS = "success";
     public static final String ERROR = "error";
+    public static final String CATEGORY = "category";
+    public static final String ARTICLES = "articles";
+    public static final String FAV = "FAV";
 
     @Retention(RetentionPolicy.SOURCE)
     @StringDef({ResponseType.JSON, ResponseType.XML})

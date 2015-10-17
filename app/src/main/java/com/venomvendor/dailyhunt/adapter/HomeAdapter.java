@@ -25,6 +25,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     private static final String TAG = HomeAdapter.class.getSimpleName();
     private final Activity mActivity;
     private final List<Article> mDataSet;
+    private OnItemClickListener mItemClickListener;
 
     /**
      * Initialize the dataset of the Adapter.
@@ -34,6 +35,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     public HomeAdapter(Activity activity, List<Article> dataSet) {
         this.mActivity = activity;
         mDataSet = dataSet;
+    }
+
+    public List<Article> getData() {
+        return mDataSet;
     }
 
     // Create new views (invoked by the layout manager)
@@ -76,7 +81,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
     /**
      * Provide a reference to the type of views that you are using (custom ViewHolder)
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public final TextView mTitle;
         ImageView mThumbnail;
         TextView mPreview;
@@ -84,18 +89,27 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.ViewHolder> {
 
         public ViewHolder(View view) {
             super(view);
-            // Define click listener for the ViewHolder's View.
-            view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Log.d(TAG, "Element " + getLayoutPosition() + " clicked.");
-                }
-            });
             mTitle = (TextView) view.findViewById(R.id.list_home_title);
             mThumbnail = (ImageView) view.findViewById(R.id.list_home_img);
             mPreview = (TextView) view.findViewById(R.id.list_home_cnt);
             mPublisher = (TextView) view.findViewById(R.id.list_home_date);
+            view.setOnClickListener(this);
         }
 
+        @Override
+        public void onClick(View v) {
+            if (mItemClickListener != null) {
+                // Define click listener for the ViewHolder's View.
+                mItemClickListener.onItemClick(v, getLayoutPosition());
+            }
+        }
+    }
+
+    public interface OnItemClickListener {
+        public void onItemClick(View view, int position);
+    }
+
+    public void setOnItemClickListener(final OnItemClickListener itemClickListener) {
+        mItemClickListener = itemClickListener;
     }
 }

@@ -115,6 +115,9 @@ public abstract class BaseActivity extends AppCompatActivity
 
         toggle.setDrawerIndicatorEnabled(isDrawerEnabled());
         drawer.setEnabled(isDrawerEnabled());
+        if (!isDrawerEnabled()) {
+            drawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        }
     }
 
     @Override
