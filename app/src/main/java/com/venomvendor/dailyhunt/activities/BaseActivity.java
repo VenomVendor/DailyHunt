@@ -191,7 +191,6 @@ public abstract class BaseActivity extends AppCompatActivity
         dialog.show();
     }
 
-
     @CallSuper
     @Subscribe(sticky = true)
     public void onEventApiCount(ApiHits apiHits) {

@@ -71,7 +71,6 @@
                     android:textSize="21sp"
                     app:typeface="@string/font_roboto_bold_condensed" />
 
-
                 <com.venomvendor.dailyhunt.widget.DHTextView
                     android:id="@+id/reading_content"
                     android:layout_width="wrap_content"

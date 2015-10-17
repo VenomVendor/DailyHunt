@@ -39,12 +39,10 @@ public class BookMarkActivity extends BaseActivity {
         return R.layout.activity_bm;
     }
 
-
     @Override
     protected boolean isDrawerEnabled() {
         return false;
     }
-
 
     private void initLocalViews() {
         initArticleView();
@@ -61,7 +59,6 @@ public class BookMarkActivity extends BaseActivity {
         }
         return mBookMarkedArticles;
     }
-
 
     private void initArticleView() {
         mSwipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
