@@ -1,6 +1,7 @@
 package com.venomvendor.dailyhunt.activities;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.LayoutRes;
@@ -18,7 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.RelativeLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,7 +43,7 @@ public abstract class BaseActivity extends AppCompatActivity
 
     protected TextView mLogo;
     protected TextView mNav;
-    protected RelativeLayout mContentHolder;
+    protected FrameLayout mContentHolder;
 
     protected abstract boolean isDrawerEnabled();
 
@@ -77,7 +78,7 @@ public abstract class BaseActivity extends AppCompatActivity
     }
 
     private void initHolder() {
-        mContentHolder = (RelativeLayout) findViewById(R.id.content_holder);
+        mContentHolder = (FrameLayout) findViewById(R.id.content_holder);
         mContentHolder.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
         inflater.inflate(contentView(), mContentHolder, true);
@@ -92,6 +93,8 @@ public abstract class BaseActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
+
+        fab.setVisibility(View.GONE); //TODO-Remove if not required.
     }
 
     private void initDrawer() {
@@ -128,20 +131,18 @@ public abstract class BaseActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
-        int id = item.getItemId();
+        final int id = item.getItemId();
 
-        if (id == R.id.nav_camara) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
+        if (id == R.id.nav_manage) {
+            showToast("Show Settings");
         } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
+            Intent sendIntent = new Intent();
+            sendIntent.setAction(Intent.ACTION_SEND);
+            sendIntent.putExtra(Intent.EXTRA_TEXT, "Demo for Daily Hunt, by VenomVendor™");
+            sendIntent.setType("text/plain");
+            startActivity(Intent.createChooser(sendIntent, "Send to"));
+        } else if (id == R.id.nav_about) {
+            showToast("Demo for Daily Hunt \n Version 1.0.0-beta");
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

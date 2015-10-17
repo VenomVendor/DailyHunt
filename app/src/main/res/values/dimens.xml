@@ -15,4 +15,11 @@
     <dimen name="margin_large_extra">48dp</dimen>
     <dimen name="margin_huge">64dp</dimen>
 
+    <dimen name="list_home_img_max">90dp</dimen>
+    <dimen name="list_home_img_min">60dp</dimen>
+    <dimen name="list_home_txt_pad">8dp</dimen>
+    <dimen name="list_home_title">17sp</dimen>
+    <dimen name="list_home_txt">13sp</dimen>
+    <dimen name="list_home_pub">9sp</dimen>
+
 </resources>

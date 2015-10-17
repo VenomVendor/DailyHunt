@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/cardview"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:elevation="100dp"
+    android:gravity="center_vertical"
+    app:cardBackgroundColor="#FFF"
+    app:cardCornerRadius="3dp"
+    app:cardUseCompatPadding="false">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="horizontal"
+        tools:ignore="HardcodedText,ContentDescription">
+
+        <ImageView
+            android:id="@+id/list_home_img"
+            android:layout_width="@dimen/list_home_img_max"
+            android:layout_height="@dimen/list_home_img_max"
+            android:adjustViewBounds="true"
+            android:maxWidth="@dimen/list_home_img_max"
+            android:scaleType="centerCrop" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingBottom="3dp"
+            android:paddingLeft="@dimen/list_home_txt_pad"
+            android:paddingRight="@dimen/list_home_txt_pad"
+            android:paddingTop="3dp">
+
+            <com.venomvendor.dailyhunt.widget.DHTextView
+                android:id="@+id/list_home_title"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="TextView"
+                android:layout_toLeftOf="@+id/chevron"
+                android:layout_toStartOf="@+id/chevron"
+                android:textColor="@color/text_color_title"
+                android:textSize="@dimen/list_home_title"
+                app:typeface="@string/font_roboto_condensed" />
+
+            <com.venomvendor.dailyhunt.widget.DHTextView
+                android:id="@+id/list_home_cnt"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/list_home_title"
+                android:layout_marginTop="5dp"
+                android:layout_toLeftOf="@+id/chevron"
+                android:layout_toStartOf="@+id/chevron"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="TextView"
+                android:textColor="@color/text_color_txt"
+                android:textSize="@dimen/list_home_txt"
+                app:typeface="@string/font_roboto_condensed" />
+
+            <com.venomvendor.dailyhunt.widget.DHTextView
+                android:id="@+id/list_home_date"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:text="TextView"
+                android:textSize="@dimen/list_home_pub"
+                app:typeface="@string/font_roboto_light" />
+
+            <ImageView
+                android:id="@+id/chevron"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/ic_chevron_right" />
+        </RelativeLayout>
+
+    </LinearLayout>
+</android.support.v7.widget.CardView>
