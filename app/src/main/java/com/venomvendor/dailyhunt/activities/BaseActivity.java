@@ -3,12 +3,26 @@ package com.venomvendor.dailyhunt.activities;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
+import android.support.annotation.LayoutRes;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.util.SparseArrayCompat;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.venomvendor.dailyhunt.R;
 import com.venomvendor.dailyhunt.core.DHApplication;
 import com.venomvendor.dailyhunt.model.ApiHits;
 import com.venomvendor.dailyhunt.model.GetPosts;
@@ -19,17 +33,120 @@ import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 import vee.android.lib.SimpleSharedPreferences;
 
-public class BaseActivity extends AppCompatActivity {
+public abstract class BaseActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener {
 
     private final String TAG = BaseActivity.class.getSimpleName();
     private final SparseArrayCompat<AlertDialog> mDialogs = new SparseArrayCompat<>(1);
     protected SimpleSharedPreferences mPrefs;
 
+    protected TextView mLogo;
+    protected TextView mNav;
+    protected RelativeLayout mContentHolder;
+
+    protected abstract boolean isDrawerEnabled();
+
+    @LayoutRes
+    protected abstract int contentView();
+
     @Override
+    @CallSuper
     public void onCreate(Bundle savedInstanceState) {
-        registerBus();
         super.onCreate(savedInstanceState);
+        registerBus();
         mPrefs = DHApplication.getSharedPreferences();
+        setContentView(baseView());
+        initViews();
+    }
+
+    @LayoutRes
+    private int baseView() {
+        return R.layout.activity_base;
+    }
+
+    private void initViews() {
+
+        if (contentView() == baseView()) {
+            throw new IllegalArgumentException("Do not include baseView() in contentView()," +
+                    "since it can cause cyclic includes");
+        }
+
+        initHolder();
+        initFAB();
+        initDrawer();
+    }
+
+    private void initHolder() {
+        mContentHolder = (RelativeLayout) findViewById(R.id.content_holder);
+        mContentHolder.removeAllViews();
+        LayoutInflater inflater = LayoutInflater.from(this);
+        inflater.inflate(contentView(), mContentHolder, true);
+    }
+
+    private void initFAB() {
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
+    }
+
+    private void initDrawer() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        mLogo = (TextView) toolbar.findViewById(R.id.action_bar_logo);
+        mNav = (TextView) toolbar.findViewById(R.id.action_bar_nav);
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+
+        toggle.setDrawerIndicatorEnabled(isDrawerEnabled());
+        drawer.setEnabled(isDrawerEnabled());
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_camara) {
+            // Handle the camera action
+        } else if (id == R.id.nav_gallery) {
+
+        } else if (id == R.id.nav_slideshow) {
+
+        } else if (id == R.id.nav_manage) {
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 
     protected void showCustomDialog(String title, String msg,
@@ -73,7 +190,7 @@ public class BaseActivity extends AppCompatActivity {
             showToast(apiHits.getError());
         }
         //Battery Killer.
-        NetworkHandler.getInstance().getApiCount();
+        // NetworkHandler.getInstance().getApiCount(); TODO
     }
 
     @CallSuper
