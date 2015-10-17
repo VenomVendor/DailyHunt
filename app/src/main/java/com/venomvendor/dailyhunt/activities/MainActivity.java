@@ -37,6 +37,7 @@ import com.venomvendor.dailyhunt.model.Article;
 import com.venomvendor.dailyhunt.model.GetPosts;
 import com.venomvendor.dailyhunt.network.NetworkHandler;
 import com.venomvendor.dailyhunt.util.AppUtils;
+import com.venomvendor.dailyhunt.util.Constants;
 import com.venomvendor.dailyhunt.util.DHHelper;
 
 import java.util.ArrayList;
@@ -56,7 +57,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private TextView mApiCount;
 
     protected RecyclerView mArticleView;
-    protected HomeAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
     SwipeRefreshLayout mSwipeRefreshLayout;
 
@@ -156,16 +156,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     }
 
     private void setOldData() {
-        mAdapter = new HomeAdapter(this, cacheArticles);
-        mArticleView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
+        updateAdapter(new HomeAdapter(this, cacheArticles));
     }
 
     private void doFilter(String query) {
         //TODO-Animate WhileAdding.
-        mAdapter = new HomeAdapter(this, filter(cacheArticles, query.toLowerCase().trim()));
-        mArticleView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
+        updateAdapter(new HomeAdapter(this, filter(cacheArticles, query.toLowerCase().trim())));
     }
 
     private List<Article> filter(List<Article> articles, String query) {
@@ -216,7 +212,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mArticleView = (RecyclerView) findViewById(R.id.article_view);
         mLayoutManager = new LinearLayoutManager(this);
         mArticleView.setLayoutManager(mLayoutManager);
-
         mSwipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -283,10 +278,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         CustomAnimator customAnimator = new CustomAnimator();
         mArticleView.setItemAnimator(customAnimator);
 
-        mAdapter = new HomeAdapter(this, articles);
-        mArticleView.setAdapter(mAdapter);
         cacheArticles = articles;
-        mAdapter.notifyDataSetChanged();
+        updateAdapter(new HomeAdapter(this, articles));
+
+    }
+
+    private void updateAdapter(final HomeAdapter adapter) {
+        mArticleView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+        adapter.setOnItemClickListener(new HomeAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Intent intent = new Intent(MainActivity.this, ReadingActivity.class);
+                intent.putExtra(Constants.CATEGORY, cacheArticles.get(position));
+                startActivity(intent);
+            }
+        });
     }
 
     private boolean isPermissionGranted() {
@@ -396,9 +403,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             setOldData();
             return;
         }
-        mAdapter = new HomeAdapter(this, filterCategory(cacheArticles, mCategories.get(position)));
-        mArticleView.setAdapter(mAdapter);
-        mAdapter.notifyDataSetChanged();
+        updateAdapter(new HomeAdapter(this, filterCategory(cacheArticles, mCategories.get(position))));
     }
 
     @Override
