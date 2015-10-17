@@ -12,6 +12,8 @@ import android.widget.Toast;
 import com.venomvendor.dailyhunt.core.DHApplication;
 import com.venomvendor.dailyhunt.model.ApiHits;
 import com.venomvendor.dailyhunt.model.GetPosts;
+import com.venomvendor.dailyhunt.network.NetworkHandler;
+import com.venomvendor.dailyhunt.util.DHHelper;
 
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
@@ -70,18 +72,26 @@ public class BaseActivity extends AppCompatActivity {
         } else {
             showToast(apiHits.getError());
         }
+        //Battery Killer.
+        NetworkHandler.getInstance().getApiCount();
     }
 
     @CallSuper
     @Subscribe
     public void onEventPosts(GetPosts posts) {
         if (posts.isSuccess()) {
+            DHHelper.removeRetry();
             Log.d(TAG, "posts.GetPosts():" + posts.getArticles().size());
         } else {
-            showToast(posts.getError());
+            if (DHHelper.hasRetriesLeft()) {
+                //RetryHere.
+                DHHelper.incrementRetry();
+                NetworkHandler.getInstance().getPosts();
+            } else {
+                showToast(posts.getError());
+            }
         }
     }
-
 
     @Override
     protected void onStart() {
@@ -107,16 +117,18 @@ public class BaseActivity extends AppCompatActivity {
         registerBus();
     }
 
-    public EventBus getBus() {
+    private EventBus getBus() {
         return EventBus.getDefault();
     }
 
+    @CallSuper
     public void registerBus() {
         if (!getBus().isRegistered(this)) {
             getBus().register(this);
         }
     }
 
+    @CallSuper
     public void unregisterBus() {
         getBus().unregister(this);
     }
